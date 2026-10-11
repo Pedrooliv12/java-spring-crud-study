@@ -23,6 +23,7 @@ A lightweight RESTful CRUD API built with Spring Boot for managing products.
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
 - [Running Tests](#-running-tests)
+- [API Documentation](#-api-documentation)
 - [API Reference](#-api-reference)
 - [Sobre o Projeto (PT-BR)](#-sobre-o-projeto-pt-br)
 
@@ -125,6 +126,21 @@ The test suite uses **MockMvc** with `@SpringBootTest` and `@Transactional` to e
 | `shouldCreateProductAndReturn201` | `POST /products` returns `201` with correct body |
 | `shouldReturn404WhenProductNotFound` | `GET /products/999` returns `404` |
 | `shouldReturn400WhenNameIsBlank` | `POST /products` with blank name returns `400` |
+
+---
+
+## 📄 API Documentation
+
+This project uses **SpringDoc OpenAPI** to generate interactive API documentation automatically.
+
+After starting the application, access:
+
+| Interface | URL |
+|---|---|
+| Swagger UI | `http://localhost:8080/swagger-ui.html` |
+| OpenAPI JSON | `http://localhost:8080/v3/api-docs` |
+
+The Swagger UI allows you to explore and test all endpoints directly from the browser — no Postman required.
 
 ---
 
@@ -257,3 +273,4 @@ O objetivo é aprender de verdade o que acontece por baixo das abstrações — 
 - Padrão DTO — separação entre o contrato público da API e a entidade interna
 - Base de dados H2 em memória para desenvolvimento
 - Testes de API com MockMvc (`@SpringBootTest`, `@AutoConfigureMockMvc`, `@Transactional`)
+- Documentação interativa com SpringDoc OpenAPI e Swagger UI
