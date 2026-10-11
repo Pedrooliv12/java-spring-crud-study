@@ -22,6 +22,7 @@ A lightweight RESTful CRUD API built with Spring Boot for managing products.
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
+- [Running Tests](#-running-tests)
 - [API Reference](#-api-reference)
 - [Sobre o Projeto (PT-BR)](#-sobre-o-projeto-pt-br)
 
@@ -105,6 +106,25 @@ http://localhost:8080/h2-console
 | Password | *(leave blank)* |
 
 > **Note:** All data is reset every time the application restarts, as H2 runs in-memory mode.
+
+---
+
+## 🧪 Running Tests
+
+```bash
+./mvnw test
+```
+
+The test suite uses **MockMvc** with `@SpringBootTest` and `@Transactional` to ensure each test runs against a clean database state.
+
+### Test coverage
+
+| Test | Scenario |
+|---|---|
+| `shouldReturnEmptyListWhenNoProducts` | `GET /products` returns `200` with empty array |
+| `shouldCreateProductAndReturn201` | `POST /products` returns `201` with correct body |
+| `shouldReturn404WhenProductNotFound` | `GET /products/999` returns `404` |
+| `shouldReturn400WhenNameIsBlank` | `POST /products` with blank name returns `400` |
 
 ---
 
@@ -236,3 +256,4 @@ O objetivo é aprender de verdade o que acontece por baixo das abstrações — 
 - Tratamento de erros global com `@ControllerAdvice` e `@ExceptionHandler`
 - Padrão DTO — separação entre o contrato público da API e a entidade interna
 - Base de dados H2 em memória para desenvolvimento
+- Testes de API com MockMvc (`@SpringBootTest`, `@AutoConfigureMockMvc`, `@Transactional`)
