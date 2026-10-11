@@ -29,7 +29,7 @@ A lightweight RESTful CRUD API built with Spring Boot for managing products.
 
 ## 📖 About
 
-This project is a simple Product CRUD REST API, developed as a hands-on study of the Spring Boot ecosystem. The goal is to understand what happens under the hood — JPA entity mapping, repository pattern, service layer separation, and HTTP response handling — without relying on code-generation tools like Lombok.
+This project is a simple Product CRUD REST API, developed as a hands-on study of the Spring Boot ecosystem. The goal is to understand what happens under the hood — JPA entity mapping, repository pattern, service layer separation, input validation, DTO pattern, and HTTP response handling — without relying on code-generation tools like Lombok.
 
 ---
 
@@ -52,13 +52,18 @@ This project is a simple Product CRUD REST API, developed as a hands-on study of
 ```
 src/main/java/com/example/api_product/
 ├── controller/
-│   └── ProductController.java   # HTTP layer — endpoints and status codes
+│   └── ProductController.java        # HTTP layer — endpoints and status codes
 ├── service/
-│   └── ProductService.java      # Business logic layer
+│   └── ProductService.java           # Business logic and DTO conversion
 ├── repository/
-│   └── ProductRepository.java   # Data access layer (Spring Data JPA)
-└── model/
-    └── Product.java             # JPA entity mapped to the products table
+│   └── ProductRepository.java        # Data access layer (Spring Data JPA)
+├── model/
+│   └── Product.java                  # JPA entity mapped to the products table
+├── dto/
+│   ├── ProductRequestDTO.java        # Input contract — what the client sends
+│   └── ProductResponseDTO.java       # Output contract — what the API exposes
+└── exception/
+    └── GlobalExceptionHandler.java   # Centralized error handling
 ```
 
 ---
@@ -156,9 +161,12 @@ POST /products
 ```json
 {
   "name": "Keyboard",
-  "price": 49.99
+  "price": 49.99,
+  "stockQuantity": 100
 }
 ```
+
+> `stockQuantity` must be zero or positive. `name` must not be blank. `price` must be positive.
 
 **Response** `201 Created`
 ```json
@@ -168,6 +176,8 @@ POST /products
   "price": 49.99
 }
 ```
+
+> Note: `stockQuantity` is stored internally but never exposed in responses.
 
 ---
 
@@ -185,7 +195,8 @@ PUT /products/{id}
 ```json
 {
   "name": "Mechanical Keyboard",
-  "price": 89.99
+  "price": 89.99,
+  "stockQuantity": 50
 }
 ```
 
@@ -221,4 +232,7 @@ O objetivo é aprender de verdade o que acontece por baixo das abstrações — 
 - Camada de serviço e injeção de dependências por construtor
 - Controllers REST com `@RestController`, `ResponseEntity` e verbos HTTP
 - Uso de `Optional<T>` para tratamento seguro de valores ausentes
+- Validação de entrada com Bean Validation (`@NotBlank`, `@Positive`, `@PositiveOrZero`, `@Valid`)
+- Tratamento de erros global com `@ControllerAdvice` e `@ExceptionHandler`
+- Padrão DTO — separação entre o contrato público da API e a entidade interna
 - Base de dados H2 em memória para desenvolvimento
