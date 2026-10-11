@@ -2,6 +2,7 @@ package com.example.api_product.controller;
 
 import com.example.api_product.model.Product;
 import com.example.api_product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> save(@RequestBody Product product) {
+    public ResponseEntity<Product> save(@Valid @RequestBody Product product) {
         Product saved = productService.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
@@ -50,7 +51,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> update(@PathVariable Long id, @Valid @RequestBody Product product) {
         Optional<Product> existing = productService.findById(id);
         if (existing.isPresent()) {
             product.setId(id);
