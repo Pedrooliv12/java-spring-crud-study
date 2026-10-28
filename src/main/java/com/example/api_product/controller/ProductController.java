@@ -6,6 +6,7 @@ import com.example.api_product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +32,7 @@ public class ProductController {
     @Operation(summary = "Posting product", description = "Registering a new product")
     @PostMapping
     public ResponseEntity<ProductResponseDTO> save(@Valid @RequestBody ProductRequestDTO product) {
-        return ResponseEntity.ok(productService.save(product));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
     }
 
     @Operation(summary = "Find product by ID", description = "Returns a single product by its ID")

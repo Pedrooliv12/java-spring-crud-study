@@ -26,11 +26,12 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
+    // MapStruct
     public ProductResponseDTO save(ProductRequestDTO dto) {
         Product product = new Product();
-        product.setName(dto.getName());
-        product.setPrice(dto.getPrice());
-        product.setStockQuantity(dto.getStockQuantity());
+        product.setName(dto.name());
+        product.setPrice(dto.price());
+        product.setStockQuantity(dto.stockQuantity());
         Product saved = productRepository.save(product);
         return new ProductResponseDTO(saved.getId(),  saved.getName(), saved.getPrice());
     }
@@ -41,9 +42,9 @@ public class ProductService {
 
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
         return productRepository.findById(id).map(existing ->  {
-            existing.setName(dto.getName());
-            existing.setPrice(dto.getPrice());
-            existing.setStockQuantity(dto.getStockQuantity());
+            existing.setName(dto.name());
+            existing.setPrice(dto.price());
+            existing.setStockQuantity(dto.stockQuantity());
             Product saved = productRepository.save(existing);
             return new ProductResponseDTO(saved.getId(), saved.getName(), saved.getPrice());
         }).orElseThrow(() -> new ProductNotFoundException(id));

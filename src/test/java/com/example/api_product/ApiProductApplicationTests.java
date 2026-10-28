@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Transactional
 class ApiProductApplicationTests {
+	// Piramide de testes
 	@Autowired
 	private MockMvc mockMvc;
 
