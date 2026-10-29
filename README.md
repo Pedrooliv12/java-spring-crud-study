@@ -10,7 +10,8 @@ A lightweight RESTful CRUD API built with Spring Boot for managing products.
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.1-brightgreen?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-Build-red?style=flat-square&logo=apachemaven)](https://maven.apache.org/)
-[![H2](https://img.shields.io/badge/H2-In--Memory%20DB-blue?style=flat-square)](https://www.h2database.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
 
 </div>
 
@@ -44,7 +45,8 @@ This project is a simple Product CRUD REST API, developed as a hands-on study of
 | Spring Web (MVC) | REST controller layer |
 | Spring Data JPA | Data access layer |
 | Hibernate | JPA implementation (ORM) |
-| H2 Database | In-memory database for development |
+| PostgreSQL 16 | Relational database |
+| Docker Compose | Container orchestration for local development |
 | Maven | Build and dependency management |
 
 ---
@@ -52,20 +54,25 @@ This project is a simple Product CRUD REST API, developed as a hands-on study of
 ## 🗂 Project Structure
 
 ```
-src/main/java/com/example/api_product/
-├── controller/
-│   └── ProductController.java        # HTTP layer — endpoints and status codes
-├── service/
-│   └── ProductService.java           # Business logic and DTO conversion
-├── repository/
-│   └── ProductRepository.java        # Data access layer (Spring Data JPA)
-├── model/
-│   └── Product.java                  # JPA entity mapped to the products table
-├── dto/
-│   ├── ProductRequestDTO.java        # Input contract — what the client sends
-│   └── ProductResponseDTO.java       # Output contract — what the API exposes
-└── exception/
-    └── GlobalExceptionHandler.java   # Centralized error handling
+api-product/
+├── docker-compose.yaml                           # PostgreSQL container definition
+├── src/main/java/com/example/api_product/
+│   ├── controller/
+│   │   └── ProductController.java                # HTTP layer — endpoints and status codes
+│   ├── service/
+│   │   └── ProductService.java                   # Business logic
+│   ├── repository/
+│   │   └── ProductRepository.java                # Data access layer (Spring Data JPA)
+│   ├── model/
+│   │   └── Product.java                          # JPA entity mapped to the products table
+│   ├── dto/
+│   │   ├── ProductRequestDTO.java                # Input contract (record)
+│   │   └── ProductResponseDTO.java               # Output contract (record)
+│   ├── mapper/
+│   │   └── ProductMapper.java                    # MapStruct mapper
+│   └── exception/
+│       ├── GlobalExceptionHandler.java           # Centralized error handling
+│       └── ProductNotFoundException.java         # Custom 404 exception
 ```
 
 ---
@@ -76,15 +83,19 @@ src/main/java/com/example/api_product/
 
 - Java 21+
 - Maven 3.8+
+- Docker
 
 ### Running the application
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/api-product.git
+git clone https://github.com/Pedrooliv12/java-spring-crud-study.git
 
 # Navigate to the project directory
-cd api-product
+cd java-spring-crud-study
+
+# Start the PostgreSQL container
+docker compose up -d
 
 # Run with Maven wrapper
 ./mvnw spring-boot:run
@@ -92,21 +103,19 @@ cd api-product
 
 The application will start at `http://localhost:8080`.
 
-### H2 Console
+### Database
 
-The in-memory database console is available at:
-
-```
-http://localhost:8080/h2-console
-```
+PostgreSQL runs in a Docker container. Connection details:
 
 | Field | Value |
 |---|---|
-| JDBC URL | `jdbc:h2:mem:testdb` |
-| Username | `sa` |
-| Password | *(leave blank)* |
+| Host | `localhost` |
+| Port | `5432` |
+| Database | `apiproduct` |
+| Username | `postgres` |
+| Password | `postgres` |
 
-> **Note:** All data is reset every time the application restarts, as H2 runs in-memory mode.
+> **Note:** Data persists between application restarts as long as the Docker container is running.
 
 ---
 
@@ -271,6 +280,9 @@ O objetivo é aprender de verdade o que acontece por baixo das abstrações — 
 - Validação de entrada com Bean Validation (`@NotBlank`, `@Positive`, `@PositiveOrZero`, `@Valid`)
 - Tratamento de erros global com `@ControllerAdvice` e `@ExceptionHandler`
 - Padrão DTO — separação entre o contrato público da API e a entidade interna
-- Base de dados H2 em memória para desenvolvimento
+- Base de dados PostgreSQL com Docker Compose
 - Testes de API com MockMvc (`@SpringBootTest`, `@AutoConfigureMockMvc`, `@Transactional`)
 - Documentação interativa com SpringDoc OpenAPI e Swagger UI
+- Mapeamento de objetos com MapStruct
+- Exceções customizadas com `@ControllerAdvice`
+- Records do Java para DTOs imutáveis
