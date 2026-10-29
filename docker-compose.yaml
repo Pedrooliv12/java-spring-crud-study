@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: api-product-db
+    environment:
+      POSTGRES_DB: apiproduct
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
