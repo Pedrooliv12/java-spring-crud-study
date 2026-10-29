@@ -3,6 +3,7 @@ package com.example.api_product.service;
 import com.example.api_product.dto.ProductRequestDTO;
 import com.example.api_product.dto.ProductResponseDTO;
 import com.example.api_product.exception.ProductNotFoundException;
+import com.example.api_product.mapper.ProductMapper;
 import com.example.api_product.model.Product;
 import com.example.api_product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,19 @@ import java.util.List;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository,  ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     public List<ProductResponseDTO> findAll() {
-        return productRepository.findAll().stream().map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice())).toList();
+        return productRepository.findAll().stream().map(p -> productMapper.toProductResponseDTO(p)).toList();
     }
 
     public ProductResponseDTO findById(Long id) {
-        return productRepository.findById(id).map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice()))
+        return productRepository.findById(id).map(p -> productMapper.toProductResponseDTO(p))
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
@@ -33,7 +36,7 @@ public class ProductService {
         product.setPrice(dto.price());
         product.setStockQuantity(dto.stockQuantity());
         Product saved = productRepository.save(product);
-        return new ProductResponseDTO(saved.getId(),  saved.getName(), saved.getPrice());
+        return productMapper.toProductResponseDTO(saved);
     }
 
     public void deleteById(Long id) {
@@ -46,7 +49,7 @@ public class ProductService {
             existing.setPrice(dto.price());
             existing.setStockQuantity(dto.stockQuantity());
             Product saved = productRepository.save(existing);
-            return new ProductResponseDTO(saved.getId(), saved.getName(), saved.getPrice());
+            return productMapper.toProductResponseDTO(saved);
         }).orElseThrow(() -> new ProductNotFoundException(id));
     }
 }
