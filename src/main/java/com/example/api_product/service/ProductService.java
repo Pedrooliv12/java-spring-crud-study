@@ -29,7 +29,6 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
-    // MapStruct
     public ProductResponseDTO save(ProductRequestDTO dto) {
         Product product = new Product();
         product.setName(dto.name());

@@ -50,6 +50,30 @@ class ApiProductApplicationTests {
 	}
 
 	@Test
+	void shouldReturn400WhenPriceIsBlank()  throws Exception {
+		mockMvc.perform(post("/products").contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard, \"price\":, \"stockQuantity\": 10}"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void shouldReturn400WhenStockQuantityIsZero()  throws Exception {
+		mockMvc.perform(post("/products").contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": 0}"))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	void shouldReturn400WhenPriceIsNegative() throws Exception {
+		mockMvc.perform(post("/products").contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": -49.99, \"stockQuantity\": 10}"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void shouldReturn400WhenStockQuantityIsNegative() throws Exception {
+		mockMvc.perform(post("/products").contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": -10}"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	void contextLoads() {
 	}
 
