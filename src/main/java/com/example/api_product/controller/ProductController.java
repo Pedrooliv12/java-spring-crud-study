@@ -54,7 +54,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Update product", description = "Updates an existing product by its ID")
-    @ApiResponse(responseCode = "200", description = "Product found")
+    @ApiResponse(responseCode = "200", description = "Product updated")
     @ApiResponse(responseCode = "404", description = "Product not found")
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ProductRequestDTO product) {
