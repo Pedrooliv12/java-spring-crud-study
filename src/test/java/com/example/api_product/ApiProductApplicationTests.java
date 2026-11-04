@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,7 +53,8 @@ class ApiProductApplicationTests {
 	@Test
 	void shouldReturn404WhenProductNotFound() throws Exception {
 		mockMvc.perform(get("/products/999").header("Authorization", "Bearer " + token))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.error").value("Product not found with id: 999"));
 	}
 
 	@Test
@@ -88,10 +89,6 @@ class ApiProductApplicationTests {
 		mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": -10}"))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.stockQuantity").exists());
-	}
-
-	@Test
-	void contextLoads() {
 	}
 
 }

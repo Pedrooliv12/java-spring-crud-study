@@ -58,6 +58,7 @@ public class ProductIntegrationTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/products/" + id).header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("MousePad"))
                 .andExpect(jsonPath("$.price").value(9.99));
     }
@@ -74,7 +75,8 @@ public class ProductIntegrationTest {
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/products/" + id).header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("Product not found with id: " + id));
     }
 
 }
