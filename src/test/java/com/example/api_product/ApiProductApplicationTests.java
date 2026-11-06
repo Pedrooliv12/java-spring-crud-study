@@ -83,6 +83,13 @@ class ApiProductApplicationTests {
 	}
 
 	@Test
+	void shouldReturn400WhenPriceHasMoreThanTwoDecimalPlaces() throws Exception {
+		mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 9.999, \"stockQuantity\": 10}"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.price").exists());
+	}
+
+	@Test
 	void shouldReturn400WhenStockQuantityIsNegative() throws Exception {
 		mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": -10}"))
 				.andExpect(status().isBadRequest())
