@@ -50,7 +50,6 @@ public class ProductController {
     @ApiResponse(responseCode = "404", description = "Product not found")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.findById(id);
         productService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

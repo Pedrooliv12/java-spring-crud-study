@@ -39,7 +39,9 @@ public class ProductService {
     }
 
     public void deleteById(Long id) {
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        productRepository.delete(product);
     }
 
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
