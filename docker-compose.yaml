@@ -25,6 +25,3 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-# Dockerfile / multistage build / dockerhub
-# CI (Github Actions) Workflow / Jobs / Steps
-# SonarQube x Snyk
