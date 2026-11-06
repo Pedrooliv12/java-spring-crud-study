@@ -4,6 +4,7 @@ import com.example.api_product.dto.ProductRequestDTO;
 import com.example.api_product.dto.ProductResponseDTO;
 import com.example.api_product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 
 @Tag(name = "Products", description = "Product management endpoints")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/products")
 public class ProductController {

@@ -30,4 +30,10 @@ public class SecurityIntegrationTest {
         mockMvc.perform(get("/products").header("Authorization", "Bearer invalid-token"))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void shouldAllowAccessToApiDocsWithoutToken() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk());
+    }
 }
