@@ -1,6 +1,7 @@
 package com.example.api_product.service;
 
 import com.example.api_product.dto.LoginRequestDTO;
+import com.example.api_product.dto.RegisterRequestDTO;
 import com.example.api_product.exception.EmailAlreadyExistsException;
 import com.example.api_product.exception.InvalidCredentialsException;
 import com.example.api_product.model.User;
@@ -21,7 +22,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String register(LoginRequestDTO dto) {
+    public String register(RegisterRequestDTO dto) {
         if (userRepository.findByEmail(dto.email()).isPresent()) {
             throw new EmailAlreadyExistsException();
         }

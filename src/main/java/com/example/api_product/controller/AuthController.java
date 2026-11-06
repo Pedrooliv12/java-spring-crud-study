@@ -1,6 +1,7 @@
 package com.example.api_product.controller;
 
 import com.example.api_product.dto.LoginRequestDTO;
+import com.example.api_product.dto.RegisterRequestDTO;
 import com.example.api_product.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,7 +38,7 @@ public class AuthController {
     @ApiResponse(responseCode = "400", description = "Invalid request body")
     @ApiResponse(responseCode = "409", description = "Email already exists")
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequestDTO dto) {
         String token = authService.register(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }

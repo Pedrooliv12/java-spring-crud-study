@@ -23,24 +23,24 @@ public class AuthIntegrationTest {
 
     @Test
     void shouldRegisterUserAndReturn201WithToken() throws Exception {
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.token").exists());
     }
 
     @Test
     void shouldReturn409WhenEmailAlreadyExists() throws Exception {
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Email already exists"));
     }
 
     @Test
     void shouldReturn400WhenEmailIsInvalid() throws Exception {
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test\", \"password\": \"password123\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.email").exists());
     }
@@ -53,21 +53,28 @@ public class AuthIntegrationTest {
     }
 
     @Test
+    void shouldReturn400WhenPasswordIsTooShort() throws Exception {
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"1234567\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.password").exists());
+    }
+
+    @Test
     void shouldLoginAndReturn200WithToken() throws Exception {
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }
 
     @Test
     void shouldReturn401WhenPasswordIsWrong() throws Exception {
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"test\"}"))
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"password123\"}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"testt\"}"))
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\": \"test@test\", \"password\": \"wrongpassword\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Invalid email or password"));
     }
