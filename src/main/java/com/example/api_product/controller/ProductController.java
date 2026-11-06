@@ -1,5 +1,6 @@
 package com.example.api_product.controller;
 
+import com.example.api_product.dto.PageResponseDTO;
 import com.example.api_product.dto.ProductRequestDTO;
 import com.example.api_product.dto.ProductResponseDTO;
 import com.example.api_product.service.ProductService;
@@ -7,12 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
-import java.util.List;
 
 @Tag(name = "Products", description = "Product management endpoints")
 @SecurityRequirement(name = "bearerAuth")
@@ -25,10 +27,11 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @Operation(summary = "List all products", description = "Returns a list of all registered products")
+    @Operation(summary = "List products", description = "Returns a page of products. Supports page, size and sort parameters (e.g. ?page=0&size=20&sort=price,desc)")
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> findAll() {
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<PageResponseDTO<ProductResponseDTO>> findAll(
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(PageResponseDTO.from(productService.findAll(pageable)));
     }
 
     @Operation(summary = "Posting product", description = "Registering a new product")

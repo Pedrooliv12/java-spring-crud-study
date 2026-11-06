@@ -34,11 +34,26 @@ class ApiProductApplicationTests {
 	}
 
 	@Test
-	void shouldReturnEmptyListWhenNoProducts() throws Exception {
+	void shouldReturnEmptyPageWhenNoProducts() throws Exception {
 		mockMvc.perform(get("/products").header("Authorization", "Bearer " + token))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$").isArray())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content").isEmpty())
+				.andExpect(jsonPath("$.totalElements").value(0));
+	}
+
+	@Test
+	void shouldLimitPageSizeToMaximum() throws Exception {
+		mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("size", "1000"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size").value(100));
+	}
+
+	@Test
+	void shouldReturn400WhenSortPropertyIsInvalid() throws Exception {
+		mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("sort", "xyz"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.error").value("Invalid sort property: xyz"));
 	}
 
 	@Test

@@ -6,9 +6,9 @@ import com.example.api_product.exception.ProductNotFoundException;
 import com.example.api_product.mapper.ProductMapper;
 import com.example.api_product.model.Product;
 import com.example.api_product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -20,8 +20,8 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public List<ProductResponseDTO> findAll() {
-        return productRepository.findAll().stream().map(p -> productMapper.toProductResponseDTO(p)).toList();
+    public Page<ProductResponseDTO> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productMapper::toProductResponseDTO);
     }
 
     public ProductResponseDTO findById(Long id) {

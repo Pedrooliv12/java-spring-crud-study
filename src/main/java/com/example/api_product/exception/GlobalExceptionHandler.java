@@ -1,5 +1,6 @@
 package com.example.api_product.exception;
 
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,5 +40,12 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<Map<String, String>> handleException(PropertyReferenceException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", "Invalid sort property: " + ex.getPropertyName());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
