@@ -24,6 +24,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // CSRF is not applicable: the API is stateless and the JWT is sent in the
+                // Authorization header, which browsers never attach automatically (no cookies).
+                // Re-enable CSRF protection if the token is ever moved to a cookie.
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
