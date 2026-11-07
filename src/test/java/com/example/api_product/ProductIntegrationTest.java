@@ -1,5 +1,6 @@
 package com.example.api_product;
 
+import com.example.api_product.model.Role;
 import com.example.api_product.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -29,7 +30,7 @@ public class ProductIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        token = jwtUtil.generateToken("test");
+        token = jwtUtil.generateToken("admin@test.com", Role.ADMIN);
     }
 
     @Test

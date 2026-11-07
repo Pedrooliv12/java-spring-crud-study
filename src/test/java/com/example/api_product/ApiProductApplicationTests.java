@@ -1,5 +1,6 @@
 package com.example.api_product;
 
+import com.example.api_product.model.Role;
 import com.example.api_product.security.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ class ApiProductApplicationTests {
 
     @BeforeEach
 	void setUp() {
-		token = jwtUtil.generateToken("test");
+		token = jwtUtil.generateToken("admin@test.com", Role.ADMIN);
 	}
 
 	@Test

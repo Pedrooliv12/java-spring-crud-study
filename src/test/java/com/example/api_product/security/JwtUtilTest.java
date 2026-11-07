@@ -1,5 +1,6 @@
 package com.example.api_product.security;
 
+import com.example.api_product.model.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Encoders;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class JwtUtilTest {
 
     @Test
     void shouldGenerateTokenAndExtractEmail() {
-        String token = jwtUtil.generateToken("user@test.com");
+        String token = jwtUtil.generateToken("user@test.com", Role.USER);
 
         String email = jwtUtil.extractEmail(token);
 
@@ -21,8 +22,17 @@ class JwtUtilTest {
     }
 
     @Test
+    void shouldGenerateTokenAndExtractRole() {
+        String token = jwtUtil.generateToken("admin@test.com", Role.ADMIN);
+
+        Role role = jwtUtil.extractRole(token);
+
+        assertThat(role).isEqualTo(Role.ADMIN);
+    }
+
+    @Test
     void shouldReturnTrueWhenTokenIsValid() {
-        String token = jwtUtil.generateToken("user@test.com");
+        String token = jwtUtil.generateToken("user@test.com", Role.USER);
 
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
     }
@@ -36,7 +46,7 @@ class JwtUtilTest {
     void shouldReturnFalseWhenTokenIsSignedWithAnotherKey() {
         JwtUtil otherJwtUtil = new JwtUtil(
                 Encoders.BASE64.encode(Jwts.SIG.HS256.key().build().getEncoded()));
-        String tokenFromAnotherKey = otherJwtUtil.generateToken("user@test.com");
+        String tokenFromAnotherKey = otherJwtUtil.generateToken("user@test.com", Role.USER);
 
         assertThat(jwtUtil.isTokenValid(tokenFromAnotherKey)).isFalse();
     }

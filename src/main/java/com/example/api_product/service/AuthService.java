@@ -4,6 +4,7 @@ import com.example.api_product.dto.LoginRequestDTO;
 import com.example.api_product.dto.RegisterRequestDTO;
 import com.example.api_product.exception.EmailAlreadyExistsException;
 import com.example.api_product.exception.InvalidCredentialsException;
+import com.example.api_product.model.Role;
 import com.example.api_product.model.User;
 import com.example.api_product.repository.UserRepository;
 import com.example.api_product.security.JwtUtil;
@@ -30,14 +31,15 @@ public class AuthService {
         User user = new User();
         user.setEmail(dto.email());
         user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setRole(Role.USER);
         userRepository.save(user);
-        return jwtUtil.generateToken(user.getEmail());
+        return jwtUtil.generateToken(user.getEmail(), user.getRole());
     }
 
     public String login(LoginRequestDTO dto) {
         return userRepository.findByEmail(dto.email())
                 .filter(user -> passwordEncoder.matches(dto.password(), user.getPassword()))
-                .map(user -> jwtUtil.generateToken(user.getEmail()))
+                .map(user -> jwtUtil.generateToken(user.getEmail(), user.getRole()))
                 .orElseThrow(() -> new InvalidCredentialsException());
     }
 
