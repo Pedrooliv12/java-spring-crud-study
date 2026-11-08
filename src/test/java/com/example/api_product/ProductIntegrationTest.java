@@ -1,6 +1,8 @@
 package com.example.api_product;
 
+import com.example.api_product.model.Category;
 import com.example.api_product.model.Role;
+import com.example.api_product.repository.CategoryRepository;
 import com.example.api_product.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -26,16 +28,28 @@ public class ProductIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private CategoryRepository categoryRepository;
     private String token;
+    private Long peripheralsId;
+    private Long accessoriesId;
 
     @BeforeEach
     public void setUp() {
         token = jwtUtil.generateToken("admin@test.com", Role.ADMIN);
+        peripheralsId = categoryRepository.save(new Category("Peripherals")).getId();
+        accessoriesId = categoryRepository.save(new Category("Accessories")).getId();
+    }
+
+    private String productJson(String name, String price, String stockQuantity, Long categoryId) {
+        return """
+                {"name": "%s", "price": %s, "stockQuantity": %s, "categoryId": %d}
+                """.formatted(name, price, stockQuantity, categoryId);
     }
 
     @Test
     void shouldCreateProductAndFindItById() throws Exception {
-        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": 10}"))
+        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content(productJson("Keyboard", "49.99", "10", peripheralsId)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
@@ -44,29 +58,31 @@ public class ProductIntegrationTest {
         mockMvc.perform(get("/products/" + id).header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Keyboard"))
-                .andExpect(jsonPath("$.price").value(49.99));
+                .andExpect(jsonPath("$.price").value(49.99))
+                .andExpect(jsonPath("$.category.name").value("Peripherals"));
     }
 
     @Test
     void shouldCreateProductAndUpdateIt() throws Exception {
-        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": 10}"))
+        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content(productJson("Keyboard", "49.99", "10", peripheralsId)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
         long id = new ObjectMapper().readTree(response).get("id").asLong();
 
-        mockMvc.perform(put("/products/" + id).header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"MousePad\", \"price\": 9.99, \"stockQuantity\": 1}"))
+        mockMvc.perform(put("/products/" + id).header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content(productJson("MousePad", "9.99", "1", accessoriesId)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/products/" + id).header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("MousePad"))
-                .andExpect(jsonPath("$.price").value(9.99));
+                .andExpect(jsonPath("$.price").value(9.99))
+                .andExpect(jsonPath("$.category.name").value("Accessories"));
     }
 
     @Test
     void shouldCreateProductAndDeleteIt() throws Exception {
-        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Keyboard\", \"price\": 49.99, \"stockQuantity\": 10}"))
+        String response = mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content(productJson("Keyboard", "49.99", "10", peripheralsId)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
