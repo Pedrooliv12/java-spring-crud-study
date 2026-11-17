@@ -2,15 +2,15 @@
 
 # 📦 api-product
 
-A RESTful product API built with Spring Boot — secured with JWT, versioned with Flyway, tested with Testcontainers, and shipped through a full CI/CD pipeline.
+A POS ("Balcão") backend with product catalog, inventory control, and cash flow management built with Spring Boot — secured with JWT, versioned with Flyway, tested with Testcontainers, and shipped through a full CI/CD pipeline.
 
-> ⚠️ **This repository is for personal study purposes.**
-> Built to learn Java and the Spring ecosystem from the ground up — without Lombok or other code-generation shortcuts.
+> Clean and explicit Java & Spring Boot architecture built from the ground up — without Lombok or other code-generation shortcuts.
 
 [![CI](https://github.com/Pedrooliv12/java-spring-crud-study/actions/workflows/ci.yml/badge.svg)](https://github.com/Pedrooliv12/java-spring-crud-study/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Pedrooliv12_java-spring-crud-study&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Pedrooliv12_java-spring-crud-study)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Pedrooliv12_java-spring-crud-study&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Pedrooliv12_java-spring-crud-study)
 [![Docker Image](https://img.shields.io/docker/image-size/pedrooliv12/api-product/latest?label=docker%20image&logo=docker)](https://hub.docker.com/r/pedrooliv12/api-product)
+[![Topics](https://img.shields.io/badge/topics-spring--boot%20%7C%20jwt%20%7C%20docker%20%7C%20postgresql-blue?style=flat-square)](#-tech-stack)
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-brightgreen?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
@@ -39,7 +39,7 @@ A RESTful product API built with Spring Boot — secured with JWT, versioned wit
 
 ## 📖 About
 
-A product management REST API developed as a hands-on study of the Spring Boot ecosystem. The goal is to understand what happens under the hood and to apply the practices expected in a professional codebase:
+The backend for **Balcão**, a Point of Sale (POS) system designed for small physical stores to manage products, categories, sales, inventory, and cash flow. Built with the Spring Boot ecosystem, emphasizing clean, maintainable, and explicit code understanding what happens under the hood without Lombok or other shortcuts:
 
 - layered architecture (controller → service → repository) with DTOs and centralized error handling;
 - stateless authentication with JWT and BCrypt-hashed passwords;
@@ -242,9 +242,17 @@ docker exec api-product-db psql -U postgres -d apiproduct \
 
 **Product response**
 ```json
-{ "id": 1, "name": "Keyboard", "price": 49.99 }
+{
+  "id": 1,
+  "name": "Keyboard",
+  "price": 49.99,
+  "stockQuantity": 10,
+  "category": {
+    "id": 1,
+    "name": "Peripherals"
+  }
+}
 ```
-> `stockQuantity` is stored but not exposed in responses.
 
 ### Pagination
 
@@ -309,8 +317,9 @@ The schema is managed by **Flyway**. Hibernate runs with `ddl-auto=validate`: it
 | V2 | Create `tb_users` table (unique email) |
 | V3 | Change `price` to `NUMERIC(10, 2)` (exact decimal for money) |
 | V4 | Add `role` to `tb_users` (default `USER`) |
+| V5 | Create `categories` table and add `category_id` FK to `products` |
 
-New schema changes go in a **new** file (`V4__...sql`). A migration that has already run must never be edited: Flyway stores its checksum and refuses to start if it changes.
+New schema changes go in a **new** file (`V6__...sql`). A migration that has already run must never be edited: Flyway stores its checksum and refuses to start if it changes.
 
 ---
 
@@ -383,9 +392,9 @@ Security decisions in this project:
 
 ## 🇧🇷 Sobre o Projeto (PT-BR)
 
-Este repositório é destinado a **estudos pessoais** de Java com Spring Boot. O objetivo é entender o que acontece por baixo das abstrações e aplicar as práticas esperadas em um projeto profissional, sem ferramentas de geração de código como o Lombok.
+O **api-product** é o backend do **Balcão**, um mini PDV com controle de estoque e fluxo de caixa para pequenos comércios. O projeto foi construído aplicando as práticas recomendadas do ecossistema Spring Boot com arquitetura limpa e explícita, compreendendo os mecanismos internos do framework sem atalhos como Lombok.
 
-### Conceitos estudados
+### Arquitetura e Recursos Implementados
 
 **API e arquitetura**
 - Arquitetura em camadas (controller → service → repository) e injeção de dependências por construtor

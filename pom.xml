@@ -11,8 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>api-product</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>api-product</name>
+	<description>POS (Balcão) backend with product catalog, inventory control, and cash flow management</description>
 	<url/>
 	<licenses>
 		<license/>
