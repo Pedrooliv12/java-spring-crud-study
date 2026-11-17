@@ -9,8 +9,8 @@ Marque cada item ao concluir. Uma fase por vez; testes passando antes de avança
 - [x] Expor `stockQuantity` na resposta de produto
 
 ## Fase 1: Catálogo
-- [ ] Migration e entidade `categories`; `category_id` em `products`
-- [ ] CRUD de categorias (ADMIN)
+- [x] Migration e entidade `categories`; `category_id` em `products`
+- [x] CRUD de categorias (ADMIN)
 - [ ] Filtros em `GET /products`: `search`, `category`, `lowStock`
 - [ ] Soft delete e campos de auditoria em produtos
 - [ ] Testes de integração e permissões

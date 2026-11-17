@@ -17,8 +17,10 @@ Status: **[feito]** já existe, **[plan]** planejado.
 | `/products` | POST | ADMIN | feito |
 | `/products/{id}` | PUT | ADMIN | feito |
 | `/products/{id}` | DELETE (soft delete) | ADMIN | feito (soft delete: plan) |
-| `/categories` | GET | USER, ADMIN | plan |
-| `/categories` | POST, PUT, DELETE | ADMIN | plan |
+| `/categories` | GET | USER, ADMIN | feito |
+| `/categories/{id}` | GET | USER, ADMIN | feito |
+| `/categories` | POST | ADMIN | feito |
+| `/categories/{id}` | PUT, DELETE | ADMIN | feito |
 
 `stockQuantity` é exposto na resposta do produto (`ProductResponseDTO`).
 

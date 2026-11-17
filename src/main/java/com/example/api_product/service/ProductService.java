@@ -50,13 +50,6 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
-        productRepository.delete(product);
-    }
-
-    @Transactional
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
         Product existing = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
@@ -67,6 +60,13 @@ public class ProductService {
         existing.setCategory(category);
         Product saved = productRepository.save(existing);
         return productMapper.toProductResponseDTO(saved);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        productRepository.delete(product);
     }
 
     private Category findCategory(Long categoryId) {
