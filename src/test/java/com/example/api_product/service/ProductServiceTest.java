@@ -63,6 +63,7 @@ class ProductServiceTest {
         assertThat(response.id()).isEqualTo(1L);
         assertThat(response.name()).isEqualTo("Keyboard");
         assertThat(response.price()).isEqualByComparingTo("49.99");
+        assertThat(response.stockQuantity()).isEqualTo(10);
         assertThat(response.category().name()).isEqualTo("Peripherals");
     }
 
@@ -91,6 +92,7 @@ class ProductServiceTest {
         assertThat(savedProduct.getStockQuantity()).isEqualTo(10);
         assertThat(savedProduct.getCategory()).isSameAs(peripherals);
         assertThat(response.name()).isEqualTo("Keyboard");
+        assertThat(response.stockQuantity()).isEqualTo(10);
         assertThat(response.category().name()).isEqualTo("Peripherals");
     }
 

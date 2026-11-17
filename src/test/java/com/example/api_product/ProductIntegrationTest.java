@@ -59,6 +59,7 @@ public class ProductIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Keyboard"))
                 .andExpect(jsonPath("$.price").value(49.99))
+                .andExpect(jsonPath("$.stockQuantity").value(10))
                 .andExpect(jsonPath("$.category.name").value("Peripherals"));
     }
 
@@ -77,6 +78,7 @@ public class ProductIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("MousePad"))
                 .andExpect(jsonPath("$.price").value(9.99))
+                .andExpect(jsonPath("$.stockQuantity").value(1))
                 .andExpect(jsonPath("$.category.name").value("Accessories"));
     }
 

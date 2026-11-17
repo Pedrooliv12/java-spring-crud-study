@@ -75,6 +75,7 @@ class ApiProductApplicationTests {
 		mockMvc.perform(post("/products").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON).content(productJson("Keyboard", "49.99", "10")))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.name").value("Keyboard"))
+				.andExpect(jsonPath("$.stockQuantity").value(10))
 				.andExpect(jsonPath("$.category.id").value(categoryId))
 				.andExpect(jsonPath("$.category.name").value("Peripherals"));
 	}
