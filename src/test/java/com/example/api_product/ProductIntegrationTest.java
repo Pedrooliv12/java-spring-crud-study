@@ -104,4 +104,83 @@ public class ProductIntegrationTest {
                 .andExpect(jsonPath("$.error").value("Product not found with id: " + id));
     }
 
+    @Test
+    void shouldFilterProductsByNameSearch() throws Exception {
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Mechanical Keyboard", "150.00", "10", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Optical Mouse", "50.00", "10", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("search", "key"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Mechanical Keyboard"));
+
+        mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("search", "MOUSE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Optical Mouse"));
+    }
+
+    @Test
+    void shouldFilterProductsByCategory() throws Exception {
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Headset", "80.00", "10", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Mousepad", "25.00", "10", accessoriesId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("category", accessoriesId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Mousepad"));
+    }
+
+    @Test
+    void shouldFilterProductsByLowStock() throws Exception {
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Low Stock Item", "30.00", "3", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Normal Stock Item", "30.00", "20", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/products").header("Authorization", "Bearer " + token).param("lowStock", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Low Stock Item"));
+    }
+
+    @Test
+    void shouldCombineFilters() throws Exception {
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Gamer Keyboard", "199.99", "2", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/products").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productJson("Office Keyboard", "49.99", "15", peripheralsId)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/products").header("Authorization", "Bearer " + token)
+                        .param("search", "Keyboard")
+                        .param("category", peripheralsId.toString())
+                        .param("lowStock", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Gamer Keyboard"));
+    }
 }

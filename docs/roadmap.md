@@ -13,7 +13,7 @@ Marque cada item ao concluir. Uma fase por vez; testes passando antes de avança
 - [x] CRUD de categorias (ADMIN)
 - [x] Filtros em `GET /products`: `search`, `category`, `lowStock`
 - [x] Soft delete e campos de auditoria em produtos
-- [ ] Testes de integração e permissões
+- [x] Testes de integração e permissões
 
 ## Fase 2: Vendas e estoque (sem pagamento externo)
 - [ ] Migrations `sales`, `sale_items`, `stock_movements`

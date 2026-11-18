@@ -34,10 +34,12 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<PageResponseDTO<ProductResponseDTO>> findAll(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Long categoryId,
+            @RequestParam(name = "category", required = false) Long category,
+            @RequestParam(name = "categoryId", required = false) Long categoryId,
             @RequestParam(required = false) Boolean lowStock,
             @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(PageResponseDTO.from(productService.findAll(search, categoryId, lowStock, pageable)));
+        Long selectedCategory = category != null ? category : categoryId;
+        return ResponseEntity.ok(PageResponseDTO.from(productService.findAll(search, selectedCategory, lowStock, pageable)));
     }
 
     @Operation(summary = "Create product", description = "Creates a new product. Requires the ADMIN role")
