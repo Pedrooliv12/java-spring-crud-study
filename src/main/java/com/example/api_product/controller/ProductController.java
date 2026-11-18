@@ -33,8 +33,11 @@ public class ProductController {
     @ApiResponse(responseCode = "401", description = "Missing or invalid token")
     @GetMapping
     public ResponseEntity<PageResponseDTO<ProductResponseDTO>> findAll(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Boolean lowStock,
             @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(PageResponseDTO.from(productService.findAll(pageable)));
+        return ResponseEntity.ok(PageResponseDTO.from(productService.findAll(search, categoryId, lowStock, pageable)));
     }
 
     @Operation(summary = "Create product", description = "Creates a new product. Requires the ADMIN role")

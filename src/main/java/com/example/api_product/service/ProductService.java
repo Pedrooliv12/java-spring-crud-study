@@ -11,8 +11,11 @@ import com.example.api_product.repository.CategoryRepository;
 import com.example.api_product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 
 @Service
 public class ProductService {
@@ -27,8 +30,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findAll(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productMapper::toProductResponseDTO);
+    public Page<ProductResponseDTO> findAll(String search, Long categoryId, Boolean lowStock, Pageable pageable) {
+        Specification<Product> spec = (root, query, cb) -> cb.conjunction();
+
+        if (search != null && !search.isBlank()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("name")), "%" + search.toLowerCase() + "%"));
+        }
+        if (categoryId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("category").get("id"), categoryId));
+        }
+        if (Boolean.TRUE.equals(lowStock)) {
+            spec = spec.and((root, query, cb) ->
+                    cb.lessThanOrEqualTo(root.get("stockQuantity"), 5));
+        }
+
+        return productRepository.findAll(spec, pageable).map(productMapper::toProductResponseDTO);
     }
 
     @Transactional(readOnly = true)
@@ -66,7 +84,8 @@ public class ProductService {
     public void deleteById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        productRepository.delete(product);
+        product.setDeletedAt(Instant.now());
+        productRepository.save(product);
     }
 
     private Category findCategory(Long categoryId) {

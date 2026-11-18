@@ -11,8 +11,8 @@ Marque cada item ao concluir. Uma fase por vez; testes passando antes de avança
 ## Fase 1: Catálogo
 - [x] Migration e entidade `categories`; `category_id` em `products`
 - [x] CRUD de categorias (ADMIN)
-- [ ] Filtros em `GET /products`: `search`, `category`, `lowStock`
-- [ ] Soft delete e campos de auditoria em produtos
+- [x] Filtros em `GET /products`: `search`, `category`, `lowStock`
+- [x] Soft delete e campos de auditoria em produtos
 - [ ] Testes de integração e permissões
 
 ## Fase 2: Vendas e estoque (sem pagamento externo)

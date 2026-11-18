@@ -54,7 +54,11 @@ class ProductServiceTest {
 
     @Test
     void shouldReturnProductWhenIdExists() {
-        Product product = new Product(1L, "Keyboard", new BigDecimal("49.99"), 10);
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Keyboard");
+        product.setPrice(new BigDecimal("49.99"));
+        product.setStockQuantity(10);
         product.setCategory(peripherals);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
@@ -110,10 +114,14 @@ class ProductServiceTest {
 
     @Test
     void shouldUpdateExistingProduct() {
-        Product existing = new Product(1L, "Keyboard", new BigDecimal("49.99"), 10);
+        Product existing = new Product();
+        existing.setId(1L);
+        existing.setName("Keyboard");
+        existing.setPrice(new BigDecimal("49.99"));
+        existing.setStockQuantity(10);
+        existing.setCategory(peripherals);
         Category accessories = new Category("Accessories");
         accessories.setId(2L);
-        existing.setCategory(peripherals);
         ProductRequestDTO dto = new ProductRequestDTO("MousePad", new BigDecimal("9.99"), 1, 2L);
         when(productRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(accessories));
@@ -144,7 +152,11 @@ class ProductServiceTest {
 
     @Test
     void shouldThrowAndNotSaveWhenUpdatingWithNonExistentCategory() {
-        Product existing = new Product(1L, "Keyboard", new BigDecimal("49.99"), 10);
+        Product existing = new Product();
+        existing.setId(1L);
+        existing.setName("Keyboard");
+        existing.setPrice(new BigDecimal("49.99"));
+        existing.setStockQuantity(10);
         existing.setCategory(peripherals);
         ProductRequestDTO dto = new ProductRequestDTO("MousePad", new BigDecimal("9.99"), 1, 999L);
         when(productRepository.findById(1L)).thenReturn(Optional.of(existing));
@@ -157,13 +169,18 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldDeleteExistingProduct() {
-        Product product = new Product(1L, "Keyboard", new BigDecimal("49.99"), 10);
+    void shouldSoftDeleteExistingProduct() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Keyboard");
+        product.setPrice(new BigDecimal("49.99"));
+        product.setStockQuantity(10);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
         productService.deleteById(1L);
 
-        verify(productRepository).delete(product);
+        verify(productRepository).save(product);
+        assertThat(product.getDeletedAt()).isNotNull();
     }
 
     @Test
@@ -173,6 +190,6 @@ class ProductServiceTest {
         assertThatThrownBy(() -> productService.deleteById(999L))
                 .isInstanceOf(ProductNotFoundException.class);
 
-        verify(productRepository, never()).delete(any());
+        verify(productRepository, never()).delete((Product) any());
     }
 }

@@ -5,6 +5,7 @@ import com.example.api_product.model.Role;
 import com.example.api_product.repository.CategoryRepository;
 import com.example.api_product.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ public class ProductIntegrationTest {
     private JwtUtil jwtUtil;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private EntityManager entityManager;
     private String token;
     private Long peripheralsId;
     private Long accessoriesId;
@@ -92,6 +95,9 @@ public class ProductIntegrationTest {
 
         mockMvc.perform(delete("/products/" + id).header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
+
+        entityManager.flush();
+        entityManager.clear();
 
         mockMvc.perform(get("/products/" + id).header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound())

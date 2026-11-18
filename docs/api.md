@@ -12,11 +12,11 @@ Status: **[feito]** já existe, **[plan]** planejado.
 ## Produtos e categorias
 | Endpoint | Método | Papel | Status |
 |---|---|---|---|
-| `/products` (paginado; filtros `search`, `category`, `lowStock`) | GET | USER, ADMIN | feito (filtros: plan) |
+| `/products` (paginado; filtros `search`, `category`, `lowStock`) | GET | USER, ADMIN | feito |
 | `/products/{id}` | GET | USER, ADMIN | feito |
 | `/products` | POST | ADMIN | feito |
 | `/products/{id}` | PUT | ADMIN | feito |
-| `/products/{id}` | DELETE (soft delete) | ADMIN | feito (soft delete: plan) |
+| `/products/{id}` | DELETE (soft delete) | ADMIN | feito |
 | `/categories` | GET | USER, ADMIN | feito |
 | `/categories/{id}` | GET | USER, ADMIN | feito |
 | `/categories` | POST | ADMIN | feito |
